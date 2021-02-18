@@ -216,7 +216,7 @@ nxt.addEventListener("click", function () {
       correctAnswer22 = curr;
     }
   });
-
+  timerSixtySec(1);
   progressBarTimer(30);
 });
 
