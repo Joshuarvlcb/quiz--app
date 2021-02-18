@@ -80,7 +80,11 @@ body {
 }
 /* #EBEBEB
 */
-.question-grid > div {
+
+.checkmark-circle-outline {
+  color: #73c58b;
+}
+.answer {
   display: flex;
   justify-content: space-between;
   font-size: 24px;

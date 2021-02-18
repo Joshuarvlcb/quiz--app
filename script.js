@@ -3,6 +3,7 @@ const options = { options: Array.from(document.querySelectorAll(".answer")) };
 const grid = document.querySelector(".question-grid");
 const container = document.querySelector(".questions-container");
 let selected = [];
+
 const clickStyle = function (e) {
   if (this.style.borderColor == "") {
     this.style.borderColor = "#0079fe";
@@ -11,12 +12,8 @@ const clickStyle = function (e) {
     this.style.borderColor = "";
     selected.pop();
   }
-  console.log(selected);
 };
-options.options.forEach((curr, i) => {
-  curr.addEventListener("click", clickStyle);
-});
-//getting the answers
+
 const question1 = {
   question1: "Cuantos hijos tuvo Abraham?",
   options: [4, 6, 7, 8],
@@ -63,14 +60,7 @@ const newPage = function (nextQuestIndex) {
 let currentAnswer = 0;
 
 let answers = [];
-options.options.forEach((curr, i, arr) => {
-  // if(curr.innerText == answer(currentAnswer)){
-  //   console.log('corr')
-  // }
-  console.log(curr.innerText);
-});
-console.log(answer(currentAnswer));
-//set up the timer
+
 const timer = document.getElementById("time");
 let counter = 30;
 const progressBar = document.querySelector(".progress");
@@ -78,20 +68,29 @@ const progressBar = document.querySelector(".progress");
 const timerSixtySec = function (seconds) {
   let sixtySec = setInterval(function () {
     counter--;
+
     timer.textContent = counter;
+
     if (counter < 10) {
       timer.style.color = "red";
     }
+
     if (counter <= 0) {
+      counter = 31;
+
       clearInterval(sixtySec);
-      answers[0].innerHTML += `<ion-icon  name="checkmark-circle-outline"></ion-icon>`;
+      correctAnswer22.innerHTML += `<ion-icon name="checkmark-circle-outline"></ion-icon>`;
       // answers[0].style.borderColor = '#a9d6ff'
-      answers[0].style.backgroundColor = "#73c58b";
+      correctAnswer22.style.backgroundColor = "#73c58b";
       submit.classList.add("none");
       nxt.classList.remove("none");
     }
+    if (questOf == 5) {
+      nxt.classList.add("none");
+    }
     if (submitState == true) {
       clearInterval(sixtySec);
+      counter = 31;
     }
   }, 1000 * seconds);
 };
@@ -101,7 +100,6 @@ const progressBarTimer = function (seconds) {
     progressBar.style.transition = `all .5s linear`;
 
     progress++;
-    console.log(progress);
     if (progress >= 0) {
       progressBar.style.width = `${progress}%`;
     }
@@ -117,49 +115,32 @@ const progressBarTimer = function (seconds) {
     }
   }, (1000 * seconds) / 100);
 };
-//create a submit click event and check to see if only one option selected if so allow submit and if no options are selected
-//you arent allowed to move on
+
 let submitState = false;
-//have a state variable to keep track if we click or unclick one
 function answer(currentAnswer) {
   return quizData[currentAnswer].correct;
 }
-//check if user got the correct answer if so change the background to green
 const whichQuest = document.getElementById("whichQuest");
 const nxt = document.getElementById("nxt");
 const submit = document.querySelector(".check");
-//fix the next button only can choose next once
-//make a answers array and store all the answers in blocks and with a function compare selcted
-//with current answer
-// const answers = function(currAnswer){
-//   return
-// }
 
-//make a results button event handler
-/*
-whenever submit is clicked check to see of only one is selected
-//hide the quiz and display a new box same size in the middle
-its going to gives us a grade based on how many we got right
- 
- 
-*/
 const answersArr = quizData.map((curr) => {
   return curr.correct;
 });
 let correctAnswers = 0;
 let currentAns = 0;
-console.log(answersArr);
 const answersCurrent = function (element) {
   return answersArr[element];
 };
-console.log(answersArr);
+
+let correctAnswer22;
+
 submit.addEventListener("click", () => {
   if (selected.length == 1) {
     submitState = true;
 
     submit.classList.add("none");
     nxt.classList.remove("none");
-
     removeEventListener("click", clickStyle);
     if (answer(currentAnswer) == selected[0].innerText) {
       selected[0].style.backgroundColor = "#73c58b";
@@ -176,18 +157,14 @@ submit.addEventListener("click", () => {
       //   answersCurrent(currentAns).style.backgroundColor = '#73c58b'
 
       selected = [];
-
-      //highlight the correct one
     }
   }
 });
 
-//if we are on the 5th question we want to add a results btn
-
 const resultsBtn = document.getElementById("results");
 const restartBtn = document.getElementById("restart");
-
 nxt.addEventListener("click", function () {
+  clearState();
   submit.classList.remove("none");
   nxt.classList.add("none");
   options.options.forEach((curr, i) => {
@@ -197,19 +174,17 @@ nxt.addEventListener("click", function () {
   });
   timer.style.color = "white";
   progressBar.style.backgroundColor = "#0079fe";
-
-  console.log(answers);
+  question.textContent = newQuest(questionIndex);
 
   submitState = false;
   questionIndex++;
   currentAns++;
   currentAnswer++;
+  selected.innerHTML = "";
+
   progress = 0;
-  progressBar.style.width = `${progress}%`;
   counter = 30;
-  timer.textContent = counter;
-  timerSixtySec(1);
-  progressBarTimer(30);
+  progressBar.style.width = `${progress}%`;
 
   if (quest < 4) {
     questOf++;
@@ -224,16 +199,25 @@ nxt.addEventListener("click", function () {
 
   if (questOf == 5) {
     submit.classList.add("none");
-    resultsBtn.classList.add("none");
+    nxt.classList.add("none");
     resultsBtn.classList.remove("none");
   }
 
-  question.textContent = newQuest(quest);
   options.options.forEach((curr, i) => {
-    curr.textContent = "";
-
-    curr.textContent = newPage(questionIndex)[i];
+    newOption = document.createElement("DIV");
+    newOption.classList.add("answer");
+    newOption.textContent = newPage(questionIndex)[i];
+    questionGrid.appendChild(newOption);
+    optionArr.push(newOption);
+    newOption.addEventListener("click", clickStyle);
   });
+  optionArr.forEach((curr) => {
+    if (curr.textContent == answer(currentAnswer)) {
+      correctAnswer22 = curr;
+    }
+  });
+
+  progressBarTimer(30);
 });
 
 const resultsContainer = document.getElementById("results-container");
@@ -247,53 +231,57 @@ resultsBtn.addEventListener("click", function () {
     resultsSpanElement.textContent = correctAnswers;
   }
 });
+let newOption;
+let optionArr = [];
 
-// i need to stop the the submit button of there is no option selected
-//i need to loop through all the naswers and increment each answer when we next
-
+const questionGrid = document.querySelector(".question-grid");
 function start() {
+  clearState();
   questOf = 1;
   quest = 0;
   submitState = false;
   questionIndex = 0;
   currentAns = 0;
   currentAnswer = 0;
-  progress = 0;
-  progressBar.style.width = `${progress}%`;
-  counter = 30;
-  timer.textContent = counter;
-  whichQuest.innerText = questOf;
+  selected = [];
 
+  progress = 0;
+  counter = 30;
+  progressBar.style.width = `${progress}%`;
+
+  selected.innerHTML = "";
+  whichQuest.innerText = questOf;
   question.textContent = newQuest(quest);
   resultsBtn.classList.add("none");
   submit.classList.remove("none");
-  timer.textContent = 30;
+
+  options.options.forEach((curr, i) => {
+    newOption = document.createElement("DIV");
+    newOption.classList.add("answer");
+    newOption.textContent = newPage(questionIndex)[i];
+    questionGrid.appendChild(newOption);
+    optionArr.push(newOption);
+    newOption.addEventListener("click", clickStyle);
+  });
+  optionArr.forEach((curr) => {
+    if (curr.textContent == answer(currentAnswer)) {
+      correctAnswer22 = curr;
+    }
+  });
   timerSixtySec(1);
   progressBarTimer(30);
-  let newValues = options.options.map((curr) => {
-    options.options.forEach((curr, i) => {
-      curr.textContent = newPage(questionIndex)[i];
-      return (curr.textContent = newPage(questionIndex)[i]);
-    });
-  });
-  return newValues;
 }
 start();
-options.options.forEach((curr) => {
-  if (curr.textContent == answer(currentAnswer)) {
-    answers.push(curr);
+
+function clearState() {
+  while (questionGrid.firstChild) {
+    questionGrid.removeChild(questionGrid.firstChild);
   }
-});
-console.log(options.options[0].textContent);
-//create the submit
+}
 
-//create next page
-
-//check results
 restartBtn.addEventListener("click", function () {
   container.classList.remove("none");
   resultsContainer.classList.add("none");
+
   start();
 });
-
-// restartBtn.addEventListener('click')
