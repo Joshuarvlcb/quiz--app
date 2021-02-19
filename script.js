@@ -2,41 +2,52 @@
 const options = { options: Array.from(document.querySelectorAll(".answer")) };
 const grid = document.querySelector(".question-grid");
 const container = document.querySelector(".questions-container");
+const styleBorder = document.querySelector(".style-border");
 let selected = [];
 
 const clickStyle = function (e) {
   if (this.style.borderColor == "") {
-    this.style.borderColor = "#0079fe";
+    this.classList.add("style-border");
     selected.push(this);
   } else {
-    this.style.borderColor = "";
+    this.classList.remove("style-border");
     selected.pop();
   }
 };
 
 const question1 = {
-  question1: "Cuantos hijos tuvo Abraham?",
-  options: [4, 6, 7, 8],
-  correct: 8,
+  question1: "What was the third plague of Egypt?",
+  options: ["mosquitos", "flys", "frogs", "mice"],
+  correct: "mosquitos",
 };
 const question2 = {
-  question1: "Quien lucho con un angel?",
-  options: ["Moises", "Josue", "Samuel", "Ismael"],
-  correct: "Ismael",
+  question1: "Who conquered the Babylon in 538 BC.?",
+  options: [
+    "Cyrus the Great",
+    "Alexander the Great",
+    "Nebuchadnezzar",
+    "Moses",
+  ],
+  correct: "Cyrus the Great",
 };
 const question3 = {
-  question1: "Quien lucho contra un leon?",
-  options: ["Jacob", "David", "Sanson", "Obed"],
-  correct: "Sanson",
+  question1: "Who was the first son of Abraham?",
+  options: ["Isaiah", "Isaac", "Ishmael", "Obed"],
+  correct: "Ishmael",
 };
 const question4 = {
-  question1: "Quien era la primera persona que Jesus Resucito?",
-  options: ["Daniel", "Marta", "Eunice", "Lazaro"],
-  correct: "Lazaro",
+  question1: "Who joined the Apostles after Judas betrayal to Jesus?",
+  options: ["Pablo", "Lucas", "Peter", "Matthias"],
+  correct: "Matthias",
 };
 const question5 = {
-  question1: "Quien queria matar a David",
-  options: ["Felipe", "Mateo", "Saul", "Goliat"],
+  question1: "what miracle od jesus is reported in all four gospels",
+  options: [
+    "The feeding of 5000 people",
+    "Walking on water",
+    "Turing water into wine",
+    "Turining rocks into bread",
+  ],
   correct: "Saul",
 };
 const quizData = [question1, question2, question3, question4, question5];
@@ -68,17 +79,15 @@ const progressBar = document.querySelector(".progress");
 const timerSixtySec = function (seconds) {
   let sixtySec = setInterval(function () {
     counter--;
-
+    console.log(counter);
     timer.textContent = counter;
 
     if (counter < 10) {
       timer.style.color = "red";
     }
-
     if (counter <= 0) {
-      counter = 31;
-
       clearInterval(sixtySec);
+      counter = 30;
       correctAnswer22.innerHTML += `<ion-icon name="checkmark-circle-outline"></ion-icon>`;
       // answers[0].style.borderColor = '#a9d6ff'
       correctAnswer22.style.backgroundColor = "#73c58b";
@@ -90,7 +99,8 @@ const timerSixtySec = function (seconds) {
     }
     if (submitState == true) {
       clearInterval(sixtySec);
-      counter = 31;
+
+      counter = 30;
     }
   }, 1000 * seconds);
 };
@@ -111,6 +121,9 @@ const progressBarTimer = function (seconds) {
     }
     if (submitState == true) {
       clearInterval(progressBarWidth);
+      progress = 0;
+      progressBar.style.width = `${progress}%`;
+
       progressBar.style.transition = `all .05s linear`;
     }
   }, (1000 * seconds) / 100);
@@ -138,6 +151,7 @@ let correctAnswer22;
 submit.addEventListener("click", () => {
   if (selected.length == 1) {
     submitState = true;
+    clearInterval(timerSixtySec);
 
     submit.classList.add("none");
     nxt.classList.remove("none");
@@ -167,24 +181,16 @@ nxt.addEventListener("click", function () {
   clearState();
   submit.classList.remove("none");
   nxt.classList.add("none");
-  options.options.forEach((curr, i) => {
-    if (curr.textContent == answersArr[i]) {
-      answers.push(curr);
-    }
-  });
+
   timer.style.color = "white";
   progressBar.style.backgroundColor = "#0079fe";
-  question.textContent = newQuest(questionIndex);
+  question.textContent = newQuest(questionIndex + 1);
 
   submitState = false;
   questionIndex++;
   currentAns++;
   currentAnswer++;
   selected.innerHTML = "";
-
-  progress = 0;
-  counter = 30;
-  progressBar.style.width = `${progress}%`;
 
   if (quest < 4) {
     questOf++;
@@ -216,14 +222,15 @@ nxt.addEventListener("click", function () {
       correctAnswer22 = curr;
     }
   });
-  timerSixtySec(1);
   progressBarTimer(30);
+  timerSixtySec(1);
 });
 
 const resultsContainer = document.getElementById("results-container");
 const resultsSpanElement = document.getElementById("grade");
 resultsBtn.addEventListener("click", function () {
   if (selected.length == 1) {
+    submitState = true;
     if (selected[0].textContent == answersArr[4]) correctAnswers++;
 
     container.classList.add("none");
@@ -244,10 +251,12 @@ function start() {
   currentAns = 0;
   currentAnswer = 0;
   selected = [];
-
+  timer.style.color = "white";
   progress = 0;
   counter = 30;
   progressBar.style.width = `${progress}%`;
+  progressBar.style.backgroundColor = `#0079fe`;
+  timer.textContent = counter;
 
   selected.innerHTML = "";
   whichQuest.innerText = questOf;
@@ -268,8 +277,8 @@ function start() {
       correctAnswer22 = curr;
     }
   });
-  timerSixtySec(1);
   progressBarTimer(30);
+  timerSixtySec(1);
 }
 start();
 
