@@ -6,13 +6,9 @@ const styleBorder = document.querySelector(".style-border");
 let selected = [];
 
 const clickStyle = function (e) {
-  if (this.style.borderColor == "") {
-    this.classList.add("style-border");
-    selected.push(this);
-  } else {
-    this.classList.remove("style-border");
-    selected.pop();
-  }
+  $(".style-border").removeClass("style-border");
+  $(this).addClass("style-border");
+  selected.push(this);
 };
 
 const question1 = {
@@ -48,7 +44,7 @@ const question5 = {
     "Turing water into wine",
     "Turining rocks into bread",
   ],
-  correct: "Saul",
+  correct: "The feeding of 5000 people",
 };
 const quizData = [question1, question2, question3, question4, question5];
 
@@ -73,21 +69,22 @@ let currentAnswer = 0;
 let answers = [];
 
 const timer = document.getElementById("time");
-let counter = 30;
+let counter = 15;
 const progressBar = document.querySelector(".progress");
-
-const timerSixtySec = function (seconds) {
-  let sixtySec = setInterval(function () {
-    counter--;
+let sixtySec;
+const timerSixtySec = function (time) {
+  sixtySec = setInterval(countDown, 1000);
+  function countDown() {
     console.log(counter);
-    timer.textContent = counter;
+    timer.textContent = time;
+    time--;
+    if (time >= 0) timer.textContent = time;
 
-    if (counter < 10) {
+    if (time < 5) {
       timer.style.color = "red";
     }
-    if (counter <= 0) {
+    if (time <= 0) {
       clearInterval(sixtySec);
-      counter = 30;
       correctAnswer22.innerHTML += `<ion-icon name="checkmark-circle-outline"></ion-icon>`;
       // answers[0].style.borderColor = '#a9d6ff'
       correctAnswer22.style.backgroundColor = "#73c58b";
@@ -99,16 +96,12 @@ const timerSixtySec = function (seconds) {
     }
     if (submitState == true) {
       clearInterval(sixtySec);
-
-      counter = 30;
     }
-  }, 1000 * seconds);
+  }
 };
 let progress = 0;
 const progressBarTimer = function (seconds) {
   const progressBarWidth = setInterval(function () {
-    progressBar.style.transition = `all .5s linear`;
-
     progress++;
     if (progress >= 0) {
       progressBar.style.width = `${progress}%`;
@@ -121,10 +114,6 @@ const progressBarTimer = function (seconds) {
     }
     if (submitState == true) {
       clearInterval(progressBarWidth);
-      progress = 0;
-      progressBar.style.width = `${progress}%`;
-
-      progressBar.style.transition = `all .05s linear`;
     }
   }, (1000 * seconds) / 100);
 };
@@ -148,49 +137,59 @@ const answersCurrent = function (element) {
 
 let correctAnswer22;
 
+let clicked;
+let previous = [];
 submit.addEventListener("click", () => {
-  if (selected.length == 1) {
+  optionArr.forEach((curr) => {
+    if (curr.classList.contains("style-border")) {
+      clicked = curr;
+      previous.push(curr);
+    }
+  });
+
+  console.log(optionArr);
+  if (selected.length >= 1) {
     submitState = true;
-    clearInterval(timerSixtySec);
 
     submit.classList.add("none");
     nxt.classList.remove("none");
     removeEventListener("click", clickStyle);
-    if (answer(currentAnswer) == selected[0].innerText) {
-      selected[0].style.backgroundColor = "#73c58b";
-      selected[0].style.borderColor = "#a9d6ff";
-      selected[0].innerHTML += `<ion-icon  name="checkmark-circle-outline" ></ion-icon>`;
+    if (answer(currentAnswer) == clicked.innerText) {
+      clicked.style.backgroundColor = "#73c58b";
+      clicked.style.borderColor = "#a9d6ff";
+      clicked.innerHTML += `<ion-icon  name="checkmark-circle-outline" ></ion-icon>`;
       correctAnswers++;
       selected = [];
     } else {
-      selected[0].style.backgroundColor = "#F2D5DB";
-      selected[0].style.borderColor = "#a9d6ff";
-      selected[0].innerHTML += `<ion-icon name="close-circle-outline"></ion-icon>`;
+      clicked.style.backgroundColor = "#F2D5DB";
+      clicked.style.borderColor = "#a9d6ff";
+      clicked.innerHTML += `<ion-icon name="close-circle-outline"></ion-icon>`;
+      selected = [];
+
       //  answersCurrent(currentAns).innerHTML += `<ion-icon  name="checkmark-circle-outline"></ion-icon>`
       //   // answers[0].style.borderColor = '#a9d6ff'
       //   answersCurrent(currentAns).style.backgroundColor = '#73c58b'
-
-      selected = [];
     }
   }
 });
 
 const resultsBtn = document.getElementById("results");
 const restartBtn = document.getElementById("restart");
+let timeValue = 15;
 nxt.addEventListener("click", function () {
   clearState();
   submit.classList.remove("none");
   nxt.classList.add("none");
-
   timer.style.color = "white";
   progressBar.style.backgroundColor = "#0079fe";
   question.textContent = newQuest(questionIndex + 1);
-
-  submitState = false;
+  progress = 0;
+  counter = 15;
+  timer.textContent = counter;
+  progressBar.style.width = progress;
   questionIndex++;
   currentAns++;
   currentAnswer++;
-  selected.innerHTML = "";
 
   if (quest < 4) {
     questOf++;
@@ -222,16 +221,23 @@ nxt.addEventListener("click", function () {
       correctAnswer22 = curr;
     }
   });
-  progressBarTimer(30);
-  timerSixtySec(1);
+  submitState = false;
+  progressBarTimer(15);
+  clearInterval(sixtySec);
+  timerSixtySec(timeValue);
 });
 
 const resultsContainer = document.getElementById("results-container");
 const resultsSpanElement = document.getElementById("grade");
 resultsBtn.addEventListener("click", function () {
-  if (selected.length == 1) {
+  optionArr.forEach((curr) => {
+    if (curr.classList.contains("style-border")) {
+      clicked = curr;
+    }
+  });
+  if (selected.length >= 1) {
     submitState = true;
-    if (selected[0].textContent == answersArr[4]) correctAnswers++;
+    if (clicked.textContent == answersArr[4]) correctAnswers++;
 
     container.classList.add("none");
     resultsContainer.classList.remove("none");
@@ -253,7 +259,8 @@ function start() {
   selected = [];
   timer.style.color = "white";
   progress = 0;
-  counter = 30;
+  counter = 15;
+  correctAnswers = 0;
   progressBar.style.width = `${progress}%`;
   progressBar.style.backgroundColor = `#0079fe`;
   timer.textContent = counter;
@@ -277,8 +284,9 @@ function start() {
       correctAnswer22 = curr;
     }
   });
-  progressBarTimer(30);
-  timerSixtySec(1);
+  console.log(correctAnswer22);
+  progressBarTimer(15);
+  timerSixtySec(15);
 }
 start();
 

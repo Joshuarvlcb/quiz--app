@@ -165,7 +165,6 @@ span {
 .progress {
   width: 0%;
   height: 100%;
-  transition: all 0.5s linear;
   background-color: #0079fe;
 }
 #whichQuest {
@@ -174,8 +173,39 @@ span {
 .none {
   display: none;
 }
-.style-border{
-  border:3px solid blueviolet;
+.style-border {
+  border: 3px solid blueviolet;
+}
+.results {
+  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 550px;
+  width: 600px;
+  background-color: rgb(255, 191, 191);
+}
+.grade {
+  font-size: 25px;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#grade {
+  padding-top: 3px;
+
+  padding-left: 6px;
+  color: rgb(0, 0, 0);
+}
+#restart {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
 }
 
 /* 
