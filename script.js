@@ -4,11 +4,16 @@ const grid = document.querySelector(".question-grid");
 const container = document.querySelector(".questions-container");
 const styleBorder = document.querySelector(".style-border");
 let selected = [];
+let submitState = false;
 
 const clickStyle = function (e) {
-  $(".style-border").removeClass("style-border");
-  $(this).addClass("style-border");
-  selected.push(this);
+  if (submitState == false) {
+    $(".style-border").removeClass("style-border");
+    $(this).addClass("style-border");
+    selected.push(this);
+  } else {
+    return;
+  }
 };
 
 const question1 = {
@@ -69,13 +74,11 @@ let currentAnswer = 0;
 let answers = [];
 
 const timer = document.getElementById("time");
-let counter = 15;
 const progressBar = document.querySelector(".progress");
 let sixtySec;
 const timerSixtySec = function (time) {
   sixtySec = setInterval(countDown, 1000);
   function countDown() {
-    console.log(counter);
     timer.textContent = time;
     time--;
     if (time >= 0) timer.textContent = time;
@@ -118,7 +121,6 @@ const progressBarTimer = function (seconds) {
   }, (1000 * seconds) / 100);
 };
 
-let submitState = false;
 function answer(currentAnswer) {
   return quizData[currentAnswer].correct;
 }
@@ -150,10 +152,8 @@ submit.addEventListener("click", () => {
   console.log(optionArr);
   if (selected.length >= 1) {
     submitState = true;
-
     submit.classList.add("none");
     nxt.classList.remove("none");
-    removeEventListener("click", clickStyle);
     if (answer(currentAnswer) == clicked.innerText) {
       clicked.style.backgroundColor = "#73c58b";
       clicked.style.borderColor = "#a9d6ff";
@@ -165,7 +165,6 @@ submit.addEventListener("click", () => {
       clicked.style.borderColor = "#a9d6ff";
       clicked.innerHTML += `<ion-icon name="close-circle-outline"></ion-icon>`;
       selected = [];
-
       //  answersCurrent(currentAns).innerHTML += `<ion-icon  name="checkmark-circle-outline"></ion-icon>`
       //   // answers[0].style.borderColor = '#a9d6ff'
       //   answersCurrent(currentAns).style.backgroundColor = '#73c58b'
@@ -184,8 +183,7 @@ nxt.addEventListener("click", function () {
   progressBar.style.backgroundColor = "#0079fe";
   question.textContent = newQuest(questionIndex + 1);
   progress = 0;
-  counter = 15;
-  timer.textContent = counter;
+  timer.textContent = 15;
   progressBar.style.width = progress;
   questionIndex++;
   currentAns++;
@@ -258,12 +256,10 @@ function start() {
   currentAnswer = 0;
   selected = [];
   timer.style.color = "white";
-  progress = 0;
-  counter = 15;
   correctAnswers = 0;
   progressBar.style.width = `${progress}%`;
   progressBar.style.backgroundColor = `#0079fe`;
-  timer.textContent = counter;
+  timer.textContent = 15;
 
   selected.innerHTML = "";
   whichQuest.innerText = questOf;
