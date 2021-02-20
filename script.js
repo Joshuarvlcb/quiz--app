@@ -42,7 +42,7 @@ const question4 = {
   correct: "Matthias",
 };
 const question5 = {
-  question1: "what miracle od jesus is reported in all four gospels",
+  question1: "what miracle of jesus is reported in all four gospels",
   options: [
     "The feeding of 5000 people",
     "Walking on water",
@@ -103,8 +103,9 @@ const timerSixtySec = function (time) {
   }
 };
 let progress = 0;
+let progressBarWidth
 const progressBarTimer = function (seconds) {
-  const progressBarWidth = setInterval(function () {
+   progressBarWidth = setInterval(function () {
     progress++;
     if (progress >= 0) {
       progressBar.style.width = `${progress}%`;
@@ -219,6 +220,7 @@ nxt.addEventListener("click", function () {
       correctAnswer22 = curr;
     }
   });
+  clicked.innerHTML = ''
   submitState = false;
   progressBarTimer(15);
   clearInterval(sixtySec);
@@ -227,19 +229,28 @@ nxt.addEventListener("click", function () {
 
 const resultsContainer = document.getElementById("results-container");
 const resultsSpanElement = document.getElementById("grade");
+const textResults = document.querySelector('.text')
 resultsBtn.addEventListener("click", function () {
   optionArr.forEach((curr) => {
     if (curr.classList.contains("style-border")) {
       clicked = curr;
     }
   });
+  if (clicked.textContent == answersArr[4]) {
+    correctAnswers++;
+    }
   if (selected.length >= 1) {
-    submitState = true;
-    if (clicked.textContent == answersArr[4]) correctAnswers++;
-
     container.classList.add("none");
     resultsContainer.classList.remove("none");
     resultsSpanElement.textContent = correctAnswers;
+    submitState = true;
+   
+    if(correctAnswers <= 3){
+      textResults.innerHTML = `Read the bible more &#129313`
+    }else{
+      textResults.innerHTML = `Wow your an expert &#129299`
+    }
+  
   }
 });
 let newOption;
@@ -257,11 +268,8 @@ function start() {
   selected = [];
   timer.style.color = "white";
   correctAnswers = 0;
-  progressBar.style.width = `${progress}%`;
   progressBar.style.backgroundColor = `#0079fe`;
   timer.textContent = 15;
-
-  selected.innerHTML = "";
   whichQuest.innerText = questOf;
   question.textContent = newQuest(quest);
   resultsBtn.classList.add("none");
@@ -280,11 +288,9 @@ function start() {
       correctAnswer22 = curr;
     }
   });
-  console.log(correctAnswer22);
   progressBarTimer(15);
   timerSixtySec(15);
 }
-start();
 
 function clearState() {
   while (questionGrid.firstChild) {
@@ -295,6 +301,20 @@ function clearState() {
 restartBtn.addEventListener("click", function () {
   container.classList.remove("none");
   resultsContainer.classList.add("none");
-
+  progress = 0
+  progressBar.style.width = `${progress}%`;
+  textResults.innerHTML = ''
+  clearInterval(timerSixtySec)
   start();
+
 });
+const continueElement = document.getElementById('continue')
+const startingContainer = document.querySelector('.rules-container')
+continueElement.addEventListener('click',function(){
+continueElement.classList.add('none')
+startingContainer.classList.add('none')
+container.classList.remove('none')
+
+start()
+
+})
