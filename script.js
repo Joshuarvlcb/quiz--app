@@ -51,7 +51,44 @@ const question5 = {
   ],
   correct: "The feeding of 5000 people",
 };
-const quizData = [question1, question2, question3, question4, question5];
+const question6 = {
+  question1:
+    "What is the only book of the Bible that does not contain the word God?",
+  options: ["Ruth", "Esther", "John", "Joshua"],
+  correct: "Esther",
+};
+const question7 = {
+  question1: "How many brothers did Jesus have?",
+  options: [2, 5, 6, 4],
+  correct: 4,
+};
+const question8 = {
+  question1: "The oldest man on record, Methuselah, lived to be how old?",
+  options: [969, 957, 934, 856],
+  correct: 969,
+};
+const question9 = {
+  question1: "How many books are there in the Old Testament?",
+  options: [41, 37, 39, 33],
+  correct: 39,
+};
+const question10 = {
+  question1: "What is the shortest book of the Bible?",
+  options: ["Titus", "2 John", "Philemon", "Jude"],
+  correct: "Jude",
+};
+const quizData = [
+  question1,
+  question2,
+  question3,
+  question4,
+  question5,
+  question6,
+  question7,
+  question8,
+  question9,
+  question10,
+];
 
 quizData.forEach((curr, i) => {
   curr.options.sort(() => Math.random() - 0.5);
@@ -91,21 +128,21 @@ const timerSixtySec = function (time) {
       correctAnswer22.innerHTML += `<ion-icon name="checkmark-circle-outline"></ion-icon>`;
       // answers[0].style.borderColor = '#a9d6ff'
       correctAnswer22.style.backgroundColor = "#73c58b";
-      submit.classList.add("none");
-      nxt.classList.remove("none");
+      if (questOf !== 10) {
+        submit.classList.add("none");
+        nxt.classList.remove("none");
+      }
     }
-    if (questOf == 5) {
-      nxt.classList.add("none");
-    }
+
     if (submitState == true) {
       clearInterval(sixtySec);
     }
   }
 };
 let progress = 0;
-let progressBarWidth
+let progressBarWidth;
 const progressBarTimer = function (seconds) {
-   progressBarWidth = setInterval(function () {
+  progressBarWidth = setInterval(function () {
     progress++;
     if (progress >= 0) {
       progressBar.style.width = `${progress}%`;
@@ -189,22 +226,21 @@ nxt.addEventListener("click", function () {
   questionIndex++;
   currentAns++;
   currentAnswer++;
+  quest++;
 
-  if (quest < 4) {
+  if (quest < 10) {
     questOf++;
   }
+  whichQuest.textContent = questOf;
 
   options.options.forEach((curr) => {
     curr.style.backgroundColor = "#eff8ff";
   });
 
-  quest++;
-  whichQuest.innerText = questOf;
-
-  if (questOf == 5) {
+  if (questionIndex == 9) {
+    resultsBtn.classList.remove("none");
     submit.classList.add("none");
     nxt.classList.add("none");
-    resultsBtn.classList.remove("none");
   }
 
   options.options.forEach((curr, i) => {
@@ -220,8 +256,10 @@ nxt.addEventListener("click", function () {
       correctAnswer22 = curr;
     }
   });
-  clicked.innerHTML = ''
+
+  clicked.innerHTML = "";
   submitState = false;
+  clearInterval(progressBarWidth);
   progressBarTimer(15);
   clearInterval(sixtySec);
   timerSixtySec(timeValue);
@@ -229,28 +267,27 @@ nxt.addEventListener("click", function () {
 
 const resultsContainer = document.getElementById("results-container");
 const resultsSpanElement = document.getElementById("grade");
-const textResults = document.querySelector('.text')
+const textResults = document.querySelector(".text");
 resultsBtn.addEventListener("click", function () {
   optionArr.forEach((curr) => {
     if (curr.classList.contains("style-border")) {
       clicked = curr;
     }
   });
-  if (clicked.textContent == answersArr[4]) {
+  if (clicked.textContent == answersArr[9]) {
     correctAnswers++;
-    }
+  }
   if (selected.length >= 1) {
     container.classList.add("none");
     resultsContainer.classList.remove("none");
     resultsSpanElement.textContent = correctAnswers;
     submitState = true;
-   
-    if(correctAnswers <= 3){
-      textResults.innerHTML = `Read the bible more &#129313`
-    }else{
-      textResults.innerHTML = `Wow your an expert &#129299`
+
+    if (correctAnswers <= 1) {
+      textResults.innerHTML = `You need to study the bible more`;
+    } else {
+      textResults.innerHTML = `Wow your an expert &#129299`;
     }
-  
   }
 });
 let newOption;
@@ -301,20 +338,18 @@ function clearState() {
 restartBtn.addEventListener("click", function () {
   container.classList.remove("none");
   resultsContainer.classList.add("none");
-  progress = 0
+  progress = 0;
   progressBar.style.width = `${progress}%`;
-  textResults.innerHTML = ''
-  clearInterval(timerSixtySec)
+  textResults.innerHTML = "";
+  clearInterval(timerSixtySec);
   start();
-
 });
-const continueElement = document.getElementById('continue')
-const startingContainer = document.querySelector('.rules-container')
-continueElement.addEventListener('click',function(){
-continueElement.classList.add('none')
-startingContainer.classList.add('none')
-container.classList.remove('none')
+const continueElement = document.getElementById("continue");
+const startingContainer = document.querySelector(".rules-container");
+continueElement.addEventListener("click", function () {
+  continueElement.classList.add("none");
+  startingContainer.classList.add("none");
+  container.classList.remove("none");
 
-start()
-
-})
+  start();
+});
