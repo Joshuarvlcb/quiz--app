@@ -4,6 +4,7 @@ const grid = document.querySelector(".question-grid");
 const container = document.querySelector(".questions-container");
 const styleBorder = document.querySelector(".style-border");
 let selected = [];
+let name = window.prompt("What is your name")
 let submitState = false;
 
 
@@ -247,8 +248,10 @@ nxt.addEventListener("click", function () {
       correctAnswer22 = curr;
     }
   });
-
+if(clicked){
   clicked.innerHTML = "";
+
+}
   submitState = false;
   clearInterval(progressBarWidth);
   progressBarTimer(15);
@@ -274,8 +277,8 @@ resultsBtn.addEventListener("click", function () {
     resultsSpanElement.textContent = correctAnswers;
     submitState = true;
 
-    if (correctAnswers <= 5) {
-      textResults.innerHTML = `You need to study the bible more`;
+    if (correctAnswers <= 3) {
+      textResults.innerHTML = `You need to study the bible more ${name}`;
     } else {
       textResults.innerHTML = `Wow your an expert &#129299`;
     }
@@ -302,6 +305,8 @@ function start() {
   question.textContent = newQuest(quest);
   resultsBtn.classList.add("none");
   submit.classList.remove("none");
+
+
 
   options.options.forEach((curr, i) => {
     newOption = document.createElement("DIV");
