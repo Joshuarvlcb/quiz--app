@@ -6,88 +6,81 @@ const styleBorder = document.querySelector(".style-border");
 let selected = [];
 let submitState = false;
 
-const clickStyle = function (e) {
-  if (submitState == false) {
-    $(".style-border").removeClass("style-border");
-    $(this).addClass("style-border");
-    selected.push(this);
-  } else {
-    return;
-  }
-};
 
-const question1 = {
-  question1: "What was the third plague of Egypt?",
-  options: ["mosquitos", "flys", "frogs", "mice"],
-  correct: "mosquitos",
-};
-const question2 = {
-  question1: "Who conquered the Babylon in 538 BC.?",
-  options: [
-    "Cyrus the Great",
-    "Alexander the Great",
-    "Nebuchadnezzar",
-    "Moses",
-  ],
-  correct: "Cyrus the Great",
-};
-const question3 = {
-  question1: "Who was the first son of Abraham?",
-  options: ["Isaiah", "Isaac", "Ishmael", "Obed"],
-  correct: "Ishmael",
-};
+  grid.addEventListener('click', function(e){
+    selected.forEach(curr => {
+      curr.classList.remove('style-border')
+    })
+      if(e.target.classList.contains('answer')){
+      if (submitState == false) {
+
+      e.target.classList.add('style-border')
+      console.log(e.target)
+      selected.push(e.target);
+    }
+  }
+  })
+
+class Question {
+  constructor(question,options,correct){
+    this.question1 = question
+    this.options = options
+    this.correct = correct
+  }
+}
+const [question1,question2,question3] = [new Question('Quien era el primer hijo de Abraham',['isac','israel','ismael','david'],'ismael'),new Question("Quien conquisto babylonia?",[
+  "Ciro",
+  "Los romanos",
+  "Moises",
+  "Saul",
+],'Ciro'
+),new Question('Quien se hiso decipulo cuando jesus murio?', ["Pablo", "Lucas", "Pedro", "Matias"],'Matias')]
+
+
+
+// const question5 = {
+//   question1: "what miracle of jesus is reported in all four gospels",
+//   options: [
+//     "The feeding of 5000 people",
+//     "Walking on water",
+//     "Turing water into wine",
+//     "Turining rocks into bread",
+//   ],
+//   correct: "The feeding of 5000 people",
+// };
+// const question4 = {
+//   question1:
+//     "What is the only book of the Bible that does not contain the word God?",
+//   options: ["Ruth", "Esther", "John", "Joshua"],
+//   correct: "Esther",
+// };
 const question4 = {
-  question1: "Who joined the Apostles after Judas betrayal to Jesus?",
-  options: ["Pablo", "Lucas", "Peter", "Matthias"],
-  correct: "Matthias",
-};
-const question5 = {
-  question1: "what miracle of jesus is reported in all four gospels",
-  options: [
-    "The feeding of 5000 people",
-    "Walking on water",
-    "Turing water into wine",
-    "Turining rocks into bread",
-  ],
-  correct: "The feeding of 5000 people",
-};
-const question6 = {
-  question1:
-    "What is the only book of the Bible that does not contain the word God?",
-  options: ["Ruth", "Esther", "John", "Joshua"],
-  correct: "Esther",
-};
-const question7 = {
-  question1: "How many brothers did Jesus have?",
+  question1: "Cuantos Hermanos tuvo Jesus?",
   options: [2, 5, 6, 4],
   correct: 4,
 };
-const question8 = {
-  question1: "The oldest man on record, Methuselah, lived to be how old?",
+const question5 = {
+  question1: "Cuantos anos vivio Matusalén",
   options: [969, 957, 934, 856],
   correct: 969,
 };
-const question9 = {
-  question1: "How many books are there in the Old Testament?",
-  options: [41, 37, 39, 33],
-  correct: 39,
-};
-const question10 = {
-  question1: "What is the shortest book of the Bible?",
-  options: ["Titus", "2 John", "Philemon", "Jude"],
-  correct: "Jude",
-};
+// const question9 = {
+//   question1: "How many books are there in the Old Testament?",
+//   options: [41, 37, 39, 33],
+//   correct: 39,
+// };
+// const question10 = {
+//   question1: "What is the shortest book of the Bible?",
+//   options: ["Titus", "2 John", "Philemon", "Jude"],
+//   correct: "Jude",
+// };
 const quizData = [
   question1,
   question2,
   question3,
   question4,
   question5,
-  question6,
-  question7,
-  question8,
-  question9,
-  question10,
+
 ];
 
 quizData.forEach((curr, i) => {
@@ -124,6 +117,7 @@ const timerSixtySec = function (time) {
       timer.style.color = "red";
     }
     if (time <= 0) {
+      submitState = true
       clearInterval(sixtySec);
       correctAnswer22.innerHTML += `<ion-icon name="checkmark-circle-outline"></ion-icon>`;
       // answers[0].style.borderColor = '#a9d6ff'
@@ -200,12 +194,9 @@ submit.addEventListener("click", () => {
       selected = [];
     } else {
       clicked.style.backgroundColor = "#F2D5DB";
-      clicked.style.borderColor = "#a9d6ff";
+      clicked.style.borderColor = "pink";
       clicked.innerHTML += `<ion-icon name="close-circle-outline"></ion-icon>`;
       selected = [];
-      //  answersCurrent(currentAns).innerHTML += `<ion-icon  name="checkmark-circle-outline"></ion-icon>`
-      //   // answers[0].style.borderColor = '#a9d6ff'
-      //   answersCurrent(currentAns).style.backgroundColor = '#73c58b'
     }
   }
 });
@@ -237,7 +228,7 @@ nxt.addEventListener("click", function () {
     curr.style.backgroundColor = "#eff8ff";
   });
 
-  if (questionIndex == 9) {
+  if (questionIndex == 4) {
     resultsBtn.classList.remove("none");
     submit.classList.add("none");
     nxt.classList.add("none");
@@ -249,7 +240,7 @@ nxt.addEventListener("click", function () {
     newOption.textContent = newPage(questionIndex)[i];
     questionGrid.appendChild(newOption);
     optionArr.push(newOption);
-    newOption.addEventListener("click", clickStyle);
+
   });
   optionArr.forEach((curr) => {
     if (curr.textContent == answer(currentAnswer)) {
@@ -274,7 +265,7 @@ resultsBtn.addEventListener("click", function () {
       clicked = curr;
     }
   });
-  if (clicked.textContent == answersArr[9]) {
+  if (clicked.textContent == answersArr[4]) {
     correctAnswers++;
   }
   if (selected.length >= 1) {
@@ -283,7 +274,7 @@ resultsBtn.addEventListener("click", function () {
     resultsSpanElement.textContent = correctAnswers;
     submitState = true;
 
-    if (correctAnswers <= 1) {
+    if (correctAnswers <= 5) {
       textResults.innerHTML = `You need to study the bible more`;
     } else {
       textResults.innerHTML = `Wow your an expert &#129299`;
@@ -318,13 +309,12 @@ function start() {
     newOption.textContent = newPage(questionIndex)[i];
     questionGrid.appendChild(newOption);
     optionArr.push(newOption);
-    newOption.addEventListener("click", clickStyle);
   });
   optionArr.forEach((curr) => {
     if (curr.textContent == answer(currentAnswer)) {
       correctAnswer22 = curr;
     }
-  });
+  })
   progressBarTimer(15);
   timerSixtySec(15);
 }
@@ -342,10 +332,12 @@ restartBtn.addEventListener("click", function () {
   progressBar.style.width = `${progress}%`;
   textResults.innerHTML = "";
   clearInterval(timerSixtySec);
+  clearInterval(progressBarWidth)
   start();
 });
 const continueElement = document.getElementById("continue");
 const startingContainer = document.querySelector(".rules-container");
+
 continueElement.addEventListener("click", function () {
   continueElement.classList.add("none");
   startingContainer.classList.add("none");

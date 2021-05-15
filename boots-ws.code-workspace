@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"name": "gif",
+			"path": "..\\Bootstrap 4 Site Files\\Bootstrap 4 Site Files\\img\\gif"
+		},
+		{
+			"name": "bootstrap",
+			"path": "..\\bootstrap"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {}
+}
